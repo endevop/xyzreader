@@ -17,10 +17,13 @@
 
 <resources>
     <color name="photo_placeholder">#ccc</color>
-
+    <color name="white_background">#fff</color>
     <color name="theme_primary">#4CAF50</color>
     <color name="theme_primary_dark">#2E7D32</color>
     <color name="theme_accent">#FF6D00</color>
     <color name="ltgray">#ffe0e0e0</color>
     <color name="snackbar_text_color">#323232</color>
+    <color name="body_text_color">#212121</color>
+    <color name="article_byline_text_color">#8fff</color>
+    <color name="meta_bar_color">#333</color>
 </resources>

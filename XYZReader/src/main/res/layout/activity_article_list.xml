@@ -14,11 +14,11 @@
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:elevation="4dp"
+            android:paddingLeft="@dimen/toolbar_padding"
+            android:paddingRight="@dimen/toolbar_padding"
+            android:paddingStart="@dimen/toolbar_padding"
+            android:paddingEnd="@dimen/toolbar_padding"
+            android:elevation="@dimen/toolbar_elevation"
             >
 
             <ImageView
@@ -47,7 +47,7 @@
             android:paddingTop="@dimen/list_padding_top"
             android:paddingLeft="@dimen/list_side_margin"
             android:paddingStart="@dimen/list_side_margin"
-            android:paddingBottom="8dp"
+            android:paddingBottom="@dimen/recyclerview_bottom_padding"
             />
     </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.design.widget.CoordinatorLayout>
