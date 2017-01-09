@@ -9,4 +9,10 @@
 
     <string name="up">Up</string>
 
+    <!-- shared element transition -->
+    <string name="article_photo_transition" translatable="false">article_photo_transition</string>
+
+    <!-- snackbar -->
+    <string name="not_online">This app needs internet connection</string>
+
 </resources>

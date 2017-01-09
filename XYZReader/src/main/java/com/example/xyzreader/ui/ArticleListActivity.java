@@ -7,7 +7,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -18,10 +23,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.UpdaterService;
+
+import static com.example.xyzreader.ui.ArticleDetailFragment.ARG_ITEM_ID;
 
 /**
  * An activity representing a list of Articles. This activity has different presentations for
@@ -35,6 +43,7 @@ public class ArticleListActivity extends AppCompatActivity implements
     private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
+    private CoordinatorLayout mCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +59,21 @@ public class ArticleListActivity extends AppCompatActivity implements
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+
         getLoaderManager().initLoader(0, null, this);
 
         if (savedInstanceState == null) {
             refresh();
+        }
+
+
+        if(!isOnline()) {
+            Snackbar isOnlineSnackbar = Snackbar.make(mCoordinatorLayout,
+                    getString(R.string.not_online), Snackbar.LENGTH_SHORT);
+            isOnlineSnackbar.setActionTextColor(getResources().getColor(R.color.snackbar_text_color));
+            isOnlineSnackbar.show();
         }
     }
 
@@ -128,11 +148,16 @@ public class ArticleListActivity extends AppCompatActivity implements
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = getLayoutInflater().inflate(R.layout.list_item_article, parent, false);
             final ViewHolder vh = new ViewHolder(view);
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    ActivityOptionsCompat activityOptions =
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(ArticleListActivity.this);
                     startActivity(new Intent(Intent.ACTION_VIEW,
-                            ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))));
+                                    ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))),
+                            activityOptions.toBundle());
+
                 }
             });
             return vh;
@@ -146,12 +171,14 @@ public class ArticleListActivity extends AppCompatActivity implements
                     DateUtils.getRelativeTimeSpanString(
                             mCursor.getLong(ArticleLoader.Query.PUBLISHED_DATE),
                             System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-                            DateUtils.FORMAT_ABBREV_ALL).toString()
-                            + " by "
+                            DateUtils.FORMAT_ABBREV_ALL).toString() + " by "
                             + mCursor.getString(ArticleLoader.Query.AUTHOR));
+
+
+            ImageLoader imageLoader = ImageLoaderHelper.getInstance(ArticleListActivity.this)
+                    .getImageLoader();
             holder.thumbnailView.setImageUrl(
-                    mCursor.getString(ArticleLoader.Query.THUMB_URL),
-                    ImageLoaderHelper.getInstance(ArticleListActivity.this).getImageLoader());
+                    mCursor.getString(ArticleLoader.Query.THUMB_URL), imageLoader);
             holder.thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
         }
 
@@ -172,5 +199,13 @@ public class ArticleListActivity extends AppCompatActivity implements
             titleView = (TextView) view.findViewById(R.id.article_title);
             subtitleView = (TextView) view.findViewById(R.id.article_subtitle);
         }
+    }
+
+    // Checks if the device is online
+    public boolean isOnline() {
+        ConnectivityManager c = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo n = c.getActiveNetworkInfo();
+
+        return n!= null && n.isConnected();
     }
 }
