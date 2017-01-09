@@ -23,7 +23,7 @@
                     android:id="@+id/progress_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@android:style/Widget.ProgressBar.Small"
+                    style="@android:style/Widget.ProgressBar.Large"
                     android:layout_gravity="center"
                     />
 
@@ -31,7 +31,7 @@
                 <ImageView
                     android:id="@+id/photo"
                     android:layout_width="match_parent"
-                    android:layout_height="450dp"
+                    android:layout_height="@dimen/detail_photo_height"
                     android:scaleType="centerCrop"
                     />
 
@@ -109,8 +109,8 @@
         android:id="@+id/share_fab"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_marginTop="@dimen/detail_card_top_margin"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:src="@drawable/ic_share"
         android:contentDescription="@string/action_share" />
